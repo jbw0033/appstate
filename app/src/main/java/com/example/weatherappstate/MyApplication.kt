@@ -19,12 +19,14 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "se
 
 class MyApplication : Application() {
     val appState = AppState()
-    val weatherService = WeatherService(appState)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun onCreate() {
         super.onCreate()
-        weatherService.fetchCities()
+        
+        // Start the WeatherService
+        val serviceIntent = android.content.Intent(this, WeatherService::class.java)
+        startService(serviceIntent)
 
         val prefKey = stringPreferencesKey("selected_city")
 
