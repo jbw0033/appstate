@@ -7,13 +7,20 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import java.net.URL
 
 @Serializable
 data class WeatherResponse(
-    val temperature: Double? = null
+    @SerialName("current_weather")
+    val currentWeather: CurrentWeather? = null
+)
+
+@Serializable
+data class CurrentWeather(
+    val temperature: Double
 )
 
 class WeatherService : Service() {
@@ -36,7 +43,7 @@ class WeatherService : Service() {
                 val cityNames = listOf("Boston", "New York", "Los Angeles", "Chicago", "Miami", "Seattle")
                 
                 val cities = cityNames.mapIndexed { index, name ->
-                    val temp = responses.getOrNull(index)?.temperature?.toInt() ?: 0
+                    val temp = responses.getOrNull(index)?.currentWeather?.temperature?.toInt() ?: 0
                     City(name, temp)
                 }
                 
