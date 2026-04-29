@@ -3,6 +3,7 @@ package com.example.appstate
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 import kotlin.collections.getOrPut
 
 class AppState {
@@ -55,6 +56,6 @@ fun interface AppStateChangedListener {
 
 @Serializable
 open class AppStateKey<T> {
-    val autoClearKey: Any? = null
-    val predictate: (AppState) -> Boolean = { true }
+    @Transient val autoClearKey: Any? = null
+    @Transient val predictate: (AppState) -> Boolean = { true }
 }
