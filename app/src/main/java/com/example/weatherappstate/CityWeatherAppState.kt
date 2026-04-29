@@ -5,7 +5,7 @@ import com.example.appstate.AppStateKey
 import androidx.compose.runtime.State
 
 fun AppState.cityList(country: String = "US"): List<City> {
-    return getState(CitiesAppStateKey(country), cities).value
+    return getState(CitiesAppStateKey(country), emptyList()).value
 }
 
 fun AppState.setSelectedCity(city: City) {
@@ -15,19 +15,13 @@ fun AppState.setSelectedCity(city: City) {
     )
 }
 
-fun AppState.selectedCity(): State<City> {
+fun AppState.selectedCity(): State<City?> {
     return getState(
         key = SelectedCityAppStateKey,
-        cityList().first()
+        null as City?
     )
 }
 
 data class CitiesAppStateKey(val country: String) : AppStateKey<List<City>>()
 
-object SelectedCityAppStateKey : AppStateKey<City>()
-
-val cities = listOf(
-    City("Boston", 60),
-    City("NewYork", 50),
-    City("Los Angeles", 72)
-)
+object SelectedCityAppStateKey : AppStateKey<City?>()
