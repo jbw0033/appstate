@@ -4,8 +4,8 @@ import com.example.appstate.AppState
 import com.example.appstate.AppStateKey
 import androidx.compose.runtime.State
 
-fun AppState.cityList(country: String = "US"): List<City> {
-    return getState(CitiesAppStateKey(country), emptyList()).value
+fun AppState.cityList(country: String = "US"): State<List<City>> {
+    return getState(CitiesAppStateKey(country), emptyList())
 }
 
 fun AppState.isLoading(): State<Boolean> {
@@ -17,12 +17,12 @@ fun AppState.setIsLoading(loading: Boolean) {
 }
 
 fun AppState.addCity(city: City, country: String = "US") {
-    val currentList = cityList(country)
+    val currentList = cityList(country).value
     setState(CitiesAppStateKey(country), currentList + city)
 }
 
 fun AppState.removeCity(city: City, country: String = "US") {
-    val currentList = cityList(country)
+    val currentList = cityList(country).value
     setState(CitiesAppStateKey(country), currentList - city)
 }
 

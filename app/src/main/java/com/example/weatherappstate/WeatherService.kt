@@ -65,7 +65,7 @@ class WeatherService : Service() {
                         val weatherResponse = json.decodeFromString<WeatherResponse>(weatherJsonString)
                         
                         val temp = weatherResponse.currentWeather?.temperature?.toInt() ?: 0
-                        val newCity = City(result.name, temp)
+                        val newCity = City(result.name, temp, result.latitude, result.longitude)
                         
                         launch(Dispatchers.Main) {
                             appState.addCity(newCity, country)
@@ -79,22 +79,47 @@ class WeatherService : Service() {
             } else {
                 try {
                     appState.setIsLoading(true)
-                    // Fetch real data from Open-Meteo for our 6 default cities
-                    val urlString = "https://api.open-meteo.com/v1/forecast?latitude=42.3601,40.7128,34.0522,41.8781,25.7617,47.6062&longitude=-71.0589,-74.0060,-118.2437,-87.6298,-80.1918,-122.3321&current_weather=true&temperature_unit=fahrenheit"
-                    val jsonString = URL(urlString).readText()
                     
-                    val json = Json { ignoreUnknownKeys = true }
-                    val responses = json.decodeFromString<List<WeatherResponse>>(jsonString)
-                    
-                    val cityNames = listOf("Boston", "New York", "Los Angeles", "Chicago", "Miami", "Seattle")
-                    
-                    val cities = cityNames.mapIndexed { index, name ->
-                        val temp = responses.getOrNull(index)?.currentWeather?.temperature?.toInt() ?: 0
-                        City(name, temp)
+                    var currentCities = appState.cityList(country).value
+                    if (currentCities.isEmpty()) {
+                        currentCities = listOf(
+                            City("Boston", 0, 42.3601, -71.0589),
+                            City("New York", 0, 40.7128, -74.0060),
+                            City("Los Angeles", 0, 34.0522, -118.2437),
+                            City("Chicago", 0, 41.8781, -87.6298),
+                            City("Miami", 0, 25.7617, -80.1918),
+                            City("Seattle", 0, 47.6062, -122.3321)
+                        )
                     }
                     
-                    launch(Dispatchers.Main) {
-                        appState.setState(CitiesAppStateKey(country), cities)
+                    if (currentCities.isNotEmpty()) {
+                        val latitudes = currentCities.joinToString(",") { it.latitude.toString() }
+                        val longitudes = currentCities.joinToString(",") { it.longitude.toString() }
+                        
+                        val urlString = "https://api.open-meteo.com/v1/forecast?latitude=$latitudes&longitude=$longitudes&current_weather=true&temperature_unit=fahrenheit"
+                        val jsonString = URL(urlString).readText()
+                        
+                        val json = Json { ignoreUnknownKeys = true }
+                        
+                        // When only 1 location is requested, Open-Meteo returns a single object instead of an array.
+                        // We need to handle both cases or always deserialize as JsonElement and check if array.
+                        // But since we can use kotlinx.serialization, let's parse it correctly.
+                        // Actually, OpenMeteo returns a single object if only 1 lat/lon pair is passed. 
+                        // Let's just catch that or force it to be an array? No, open-meteo doesn't have a force array param.
+                        val responses = if (currentCities.size == 1) {
+                            listOf(json.decodeFromString<WeatherResponse>(jsonString))
+                        } else {
+                            json.decodeFromString<List<WeatherResponse>>(jsonString)
+                        }
+                        
+                        val updatedCities = currentCities.mapIndexed { index, city ->
+                            val temp = responses.getOrNull(index)?.currentWeather?.temperature?.toInt() ?: city.temperature
+                            city.copy(temperature = temp)
+                        }
+                        
+                        launch(Dispatchers.Main) {
+                            appState.setState(CitiesAppStateKey(country), updatedCities)
+                        }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()

@@ -74,4 +74,4 @@ fun CityWeatherScreen(city: City) {
 }
 
 @Serializable
-data class City(val name: String, val temperature: Int)
+data class City(val name: String, val temperature: Int, val latitude: Double = 0.0, val longitude: Double = 0.0)

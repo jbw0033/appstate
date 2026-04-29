@@ -41,7 +41,7 @@ import kotlinx.serialization.Serializable
 
 @Composable
 fun CityListScreen(appState: AppState, onSelectedCity: (City) -> Unit) {
-    val cities = appState.cityList()
+    val cities = appState.cityList().value
     val isLoading = appState.isLoading().value
     var showAddDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current

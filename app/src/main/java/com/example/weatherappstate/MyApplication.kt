@@ -23,28 +23,38 @@ class MyApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        
-        // Start the WeatherService
-        val serviceIntent = android.content.Intent(this, WeatherService::class.java)
-        startService(serviceIntent)
 
         val prefKey = stringPreferencesKey("selected_city")
+        val citiesKey = stringPreferencesKey("city_list")
 
-        // Load the initial selected city from DataStore
+        // Load the initial selected city and city list from DataStore
         scope.launch {
             try {
                 val preferences = dataStore.data.first()
+                
+                // Load selected city
                 val cityJson = preferences[prefKey]
                 if (cityJson != null) {
                     val city = Json.decodeFromString<City>(cityJson)
                     appState.setSelectedCity(city)
                 }
+                
+                // Load city list
+                val cityListJson = preferences[citiesKey]
+                if (cityListJson != null) {
+                    val cities = Json.decodeFromString<List<City>>(cityListJson)
+                    appState.setState(CitiesAppStateKey("US"), cities)
+                }
             } catch (e: Exception) {
                 e.printStackTrace()
+            } finally {
+                // Start the WeatherService after loading DataStore
+                val serviceIntent = android.content.Intent(this@MyApplication, WeatherService::class.java)
+                startService(serviceIntent)
             }
         }
 
-        // Save the selected city to DataStore whenever it changes
+        // Save states to DataStore whenever they change
         appState.addAppStateListener { key ->
             if (key == SelectedCityAppStateKey) {
                 val city = appState.selectedCity().value
@@ -58,6 +68,18 @@ class MyApplication : Application() {
                         } catch (e: Exception) {
                             e.printStackTrace()
                         }
+                    }
+                }
+            } else if (key == CitiesAppStateKey("US")) {
+                val cities = appState.cityList("US").value
+                scope.launch {
+                    try {
+                        val citiesJson = Json.encodeToString(cities)
+                        dataStore.edit { settings ->
+                            settings[citiesKey] = citiesJson
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
                 }
             }
