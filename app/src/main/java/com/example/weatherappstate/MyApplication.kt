@@ -2,6 +2,8 @@ package com.example.weatherappstate
 
 import android.app.Application
 import android.content.Context
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
@@ -13,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
@@ -55,32 +58,21 @@ class MyApplication : Application() {
         }
 
         // Save states to DataStore whenever they change
-        appState.addAppStateListener { key ->
-            if (key == SelectedCityAppStateKey) {
-                val city = appState.selectedCity().value
-                if (city != null) {
-                    scope.launch {
-                        try {
-                            val cityJson = Json.encodeToString(city)
-                            dataStore.edit { settings ->
-                                settings[prefKey] = cityJson
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
-                        }
-                    }
-                }
-            } else if (key == CitiesAppStateKey("US")) {
-                val cities = appState.cityList("US").value
-                scope.launch {
-                    try {
-                        val citiesJson = Json.encodeToString(cities)
+        appState.addAppStateListener {
+            val city by appState.selectedCity()
+            val cities by appState.cityList("US")
+            LaunchedEffect(city, cities) {
+                try {
+                    val cityJson = Json.encodeToString(city)
+                    val citiesJson = Json.encodeToString(cities)
+                    withContext(Dispatchers.IO) {
                         dataStore.edit { settings ->
+                            settings[prefKey] = cityJson
                             settings[citiesKey] = citiesJson
                         }
-                    } catch (e: Exception) {
-                        e.printStackTrace()
                     }
+                } catch (e: Exception) {
+                    e.printStackTrace()
                 }
             }
         }
