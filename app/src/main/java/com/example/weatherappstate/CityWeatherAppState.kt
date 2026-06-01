@@ -1,7 +1,7 @@
 package com.example.weatherappstate
 
-import com.example.appstate.AppState
-import com.example.appstate.AppStateKey
+import androidx.appstate.AppState
+import androidx.appstate.AppStateKey
 import androidx.compose.runtime.State
 
 fun AppState.cityList(country: String = "US"): State<List<City>> {
@@ -35,7 +35,7 @@ fun AppState.setSelectedCity(city: City) {
 
 fun AppState.selectedCity(): State<City?> {
     return getState(
-        key = SelectedCityAppStateKey,
+        stateKey = SelectedCityAppStateKey,
         null as City?
     )
 }

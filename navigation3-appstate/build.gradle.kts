@@ -28,7 +28,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":appstate"))
+    implementation(libs.androidx.appstate)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.compose.runtime)
     testImplementation(libs.junit)

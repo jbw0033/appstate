@@ -19,12 +19,12 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven("/usr/local/google/home/jbwoods/androidx-main/out/repository")
     }
 }
 
 rootProject.name = "WeatherAppState"
 include(":app")
-include(":appstate")
 include(":transform")
 include(":navigation3-appstate")
 

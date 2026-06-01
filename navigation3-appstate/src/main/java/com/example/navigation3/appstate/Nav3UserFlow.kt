@@ -1,9 +1,9 @@
 package com.example.navigation3.appstate
 
+import androidx.appstate.AppState
+import androidx.appstate.AppStateKey
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
-import com.example.appstate.AppState
-import com.example.appstate.AppStateKey
 
 fun AppState.startUserFlow(key: String, userFlow: Any) {
     val nav3UserFlow = getState(Nav3AppStateKey(key), Nav3UserFlow())

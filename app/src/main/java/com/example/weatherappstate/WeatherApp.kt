@@ -1,5 +1,6 @@
 package com.example.weatherappstate
 
+import androidx.appstate.AppState
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -8,7 +9,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import com.example.appstate.AppState
 import com.example.navigation3.appstate.popUserFlow
 import com.example.navigation3.appstate.startUserFlow
 import com.example.navigation3.appstate.userFlow
