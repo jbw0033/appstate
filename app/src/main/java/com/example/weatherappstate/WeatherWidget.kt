@@ -2,6 +2,7 @@ package com.example.weatherappstate
 
 import android.content.Context
 import android.content.Intent
+import androidx.appstate.AppStateKey
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -22,6 +23,7 @@ import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import kotlinx.serialization.Serializable
 
 class WeatherWidget : GlanceAppWidget() {
     override suspend fun provideGlance(context: Context, id: GlanceId) {
@@ -37,33 +39,35 @@ class WeatherWidget : GlanceAppWidget() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val city by appState.selectedCity()
-                if (city == null) {
-                    Text("No city selected")
-                } else {
-                    Text(
-                        text = city!!.name,
-                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
-                    )
-                    Spacer(modifier = GlanceModifier.height(8.dp))
+                val data by appState.getState(WeatherWidgetAppStateKey, WidgetData("No city selected", 0))
+                Text(
+                    text = data.name,
+                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                )
+                Spacer(modifier = GlanceModifier.height(8.dp))
+                Text(
+                    text = data.weatherEmoji,
+                    style = TextStyle(fontSize = 48.sp)
+                )
 
-                    val weatherEmoji = when {
-                        city!!.temperature >= 70 -> "☀️"
-                        city!!.temperature >= 50 -> "⛅"
-                        else -> "❄️"
-                    }
-                    Text(
-                        text = weatherEmoji,
-                        style = TextStyle(fontSize = 48.sp)
-                    )
-
-                    Spacer(modifier = GlanceModifier.height(8.dp))
-                    Text(
-                        text = "${city!!.temperature}\u2109",
-                        style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 32.sp)
-                    )
-                }
+                Spacer(modifier = GlanceModifier.height(8.dp))
+                Text(
+                    text = "${data.temperature}\u2109",
+                    style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 32.sp)
+                )
             }
         }
+    }
+}
+
+@Serializable
+object WeatherWidgetAppStateKey : AppStateKey<WidgetData>()
+
+@Serializable
+data class WidgetData(val name: String, val temperature: Int) {
+    val weatherEmoji = when {
+        temperature >= 70 -> "☀️"
+        temperature >= 50 -> "⛅"
+        else -> "❄️"
     }
 }
