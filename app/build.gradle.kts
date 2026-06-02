@@ -56,6 +56,8 @@ dependencies {
     implementation(libs.navigation3.ui)
     implementation(libs.androidx.datastore.preferences)
     implementation(libs.androidx.compose.material.icons.core)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.startup.runtime)
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
     androidTestImplementation(platform(libs.androidx.compose.bom))

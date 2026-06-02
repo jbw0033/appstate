@@ -26,6 +26,29 @@
         </activity>
 
         <service android:name=".WeatherService" android:exported="false" />
+
+        <receiver
+            android:name=".WeatherWidgetReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/weather_widget_info" />
+        </receiver>
+
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge"
+            xmlns:tools="http://schemas.android.com/tools">
+            <meta-data
+                android:name="com.example.weatherappstate.WeatherWidgetInitializer"
+                android:value="androidx.startup" />
+        </provider>
+
     </application>
 
 </manifest>
