@@ -29,7 +29,7 @@
         <service android:name=".WeatherService" android:exported="false" />
 
         <receiver
-            android:name=".WeatherWidgetReceiver"
+            android:name=".widget.WeatherWidgetReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -40,7 +40,7 @@
         </receiver>
 
         <receiver
-            android:name=".WeatherNotificationReceiver"
+            android:name=".notification.WeatherNotificationReceiver"
             android:exported="true">
             <intent-filter>
                 <action android:name="NEXT_CITY" />
@@ -54,7 +54,7 @@
             tools:node="merge"
             xmlns:tools="http://schemas.android.com/tools">
             <meta-data
-                android:name="com.example.weatherappstate.WeatherWidgetInitializer"
+                android:name="com.example.weatherappstate.initializer.WeatherWidgetInitializer"
                 android:value="androidx.startup" />
         </provider>
 

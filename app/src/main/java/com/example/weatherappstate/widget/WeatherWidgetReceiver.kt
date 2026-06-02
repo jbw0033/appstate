@@ -1,10 +1,11 @@
-package com.example.weatherappstate
+package com.example.weatherappstate.widget
 
 import android.content.Context
 import android.content.Intent
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetReceiver
 import androidx.startup.AppInitializer
+import com.example.weatherappstate.initializer.WeatherWidgetInitializer
 
 class WeatherWidgetReceiver : GlanceAppWidgetReceiver() {
     lateinit var context: Context

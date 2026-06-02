@@ -1,4 +1,4 @@
-package com.example.weatherappstate
+package com.example.weatherappstate.widget
 
 import android.content.Context
 import android.content.Intent
@@ -23,6 +23,8 @@ import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import com.example.weatherappstate.MainActivity
+import com.example.weatherappstate.MyApplication
 import kotlinx.serialization.Serializable
 
 class WeatherWidget : GlanceAppWidget() {

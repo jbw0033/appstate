@@ -1,9 +1,14 @@
-package com.example.weatherappstate
+package com.example.weatherappstate.initializer
 
 import android.content.Context
 import androidx.compose.runtime.LaunchedEffect
 import androidx.glance.appwidget.updateAll
 import androidx.startup.Initializer
+import com.example.weatherappstate.MyApplication
+import com.example.weatherappstate.widget.WeatherWidget
+import com.example.weatherappstate.widget.WeatherWidgetAppStateKey
+import com.example.weatherappstate.widget.WidgetData
+import com.example.weatherappstate.selectedCity
 
 class WeatherWidgetInitializer : Initializer<WeatherWidget> {
     override fun create(context: Context): WeatherWidget {
