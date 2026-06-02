@@ -2,7 +2,8 @@ package com.example.weatherappstate.widget
 
 import android.content.Context
 import android.content.Intent
-import androidx.appstate.AppStateKey
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
@@ -11,7 +12,6 @@ import androidx.glance.GlanceId
 import androidx.glance.GlanceModifier
 import androidx.glance.action.clickable
 import androidx.glance.appwidget.action.actionStartActivity
-import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
 import androidx.glance.layout.Alignment
@@ -25,12 +25,25 @@ import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.example.weatherappstate.MainActivity
 import com.example.weatherappstate.MyApplication
+import com.example.weatherappstate.selectedCity
 import kotlinx.serialization.Serializable
 
-class WeatherWidget : GlanceAppWidget() {
-    override suspend fun provideGlance(context: Context, id: GlanceId) {
-        val appState = (context.applicationContext as MyApplication).appState
+class WeatherWidget : AppStateGlanceWidget<WidgetData>() {
 
+    @Composable
+    override fun provideData(
+        context: Context,
+        id: GlanceId
+    ): WidgetData {
+        val appState = (context.applicationContext as MyApplication).appState
+        val cityState = appState.selectedCity()
+        val city = cityState.value
+        return if (city == null) WidgetData("No city selected", 0)
+        else WidgetData(city.name, city.temperature)
+    }
+
+    override suspend fun provideGlance(context: Context, data: MutableState<WidgetData>) {
+        val widgetData by data
         provideContent {
             Column(
                 modifier = GlanceModifier
@@ -41,29 +54,25 @@ class WeatherWidget : GlanceAppWidget() {
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                val data by appState.getState(WeatherWidgetAppStateKey, WidgetData("No city selected", 0))
                 Text(
-                    text = data.name,
+                    text = widgetData.name,
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 24.sp)
                 )
                 Spacer(modifier = GlanceModifier.height(8.dp))
                 Text(
-                    text = data.weatherEmoji,
+                    text = widgetData.weatherEmoji,
                     style = TextStyle(fontSize = 48.sp)
                 )
 
                 Spacer(modifier = GlanceModifier.height(8.dp))
                 Text(
-                    text = "${data.temperature}\u2109",
+                    text = "${widgetData.temperature}\u2109",
                     style = TextStyle(fontWeight = FontWeight.Bold, fontSize = 32.sp)
                 )
             }
         }
     }
 }
-
-@Serializable
-object WeatherWidgetAppStateKey : AppStateKey<WidgetData>()
 
 @Serializable
 data class WidgetData(val name: String, val temperature: Int) {

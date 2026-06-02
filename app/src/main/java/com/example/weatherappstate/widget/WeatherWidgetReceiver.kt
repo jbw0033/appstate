@@ -18,6 +18,5 @@ class WeatherWidgetReceiver : GlanceAppWidgetReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         this.context = context
         super.onReceive(context, intent)
-        // Access context here for custom intent routing
     }
 }
