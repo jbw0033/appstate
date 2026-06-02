@@ -5,10 +5,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.glance.appwidget.updateAll
 import androidx.startup.Initializer
 
-class WeatherWidgetInitializer : Initializer<Unit> {
-    override fun create(context: Context) {
+class WeatherWidgetInitializer : Initializer<WeatherWidget> {
+    override fun create(context: Context): WeatherWidget {
         val application = context.applicationContext as MyApplication
         val appState = application.appState
+        val widget = WeatherWidget()
 
         appState.addAppStateListener {
             val cityState = appState.selectedCity()
@@ -16,9 +17,10 @@ class WeatherWidgetInitializer : Initializer<Unit> {
             val data = WidgetData(city.name, city.temperature)
             LaunchedEffect(data) {
                 appState.setState(WeatherWidgetAppStateKey, data)
-                WeatherWidget().updateAll(context)
+                widget.updateAll(context)
             }
         }
+        return widget
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
