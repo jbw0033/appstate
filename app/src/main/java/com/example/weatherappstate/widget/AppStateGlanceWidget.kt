@@ -1,6 +1,7 @@
 package com.example.weatherappstate.widget
 
 import android.content.Context
+import androidx.appstate.transform.transform
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -9,17 +10,17 @@ import androidx.compose.runtime.produceState
 import androidx.glance.GlanceId
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.GlanceAppWidgetManager
-import com.example.transform.transform
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlin.coroutines.EmptyCoroutineContext
 
 abstract class AppStateGlanceWidget<T: Any> : GlanceAppWidget() {
     val map = mutableMapOf<GlanceId, MutableState<T>>()
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     internal fun startTransform(context: Context) {
-        transform(scope = scope, defaultValue = Unit) {
+        transform(context = EmptyCoroutineContext, scope = scope, defaultValue = Unit, onUpdate = {
             val glanceIds by produceState(listOf()) {
                 value = GlanceAppWidgetManager(context).getGlanceIds(this@AppStateGlanceWidget::class.java)
             }
@@ -28,7 +29,7 @@ abstract class AppStateGlanceWidget<T: Any> : GlanceAppWidget() {
                 val state = map.getOrPut(id) { mutableStateOf(data) }
                 state.value = data
             }
-        }
+        })
     }
 
     @Composable

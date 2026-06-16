@@ -20,12 +20,14 @@ dependencyResolutionManagement {
         google()
         mavenCentral()
         maven("/usr/local/google/home/jbwoods/androidx-main/out/repository")
+        maven {
+            url = uri("https://androidx.dev/snapshots/builds/15631234/artifacts/repository")
+        }
     }
 }
 
 rootProject.name = "WeatherAppState"
 include(":app")
-include(":transform")
 include(":navigation3-appstate")
 
  

@@ -40,7 +40,7 @@ android {
 
 dependencies {
     implementation(libs.androidx.appstate)
-    implementation(project(":transform"))
+    implementation(libs.androidx.transform)
     implementation(project(":navigation3-appstate"))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)

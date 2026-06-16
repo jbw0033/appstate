@@ -14,6 +14,7 @@ material3 = "1.4.0"
 adaptive = "1.3.0-alpha10"
 datastore = "1.2.1"
 appstate = "1.0.0-alpha01"
+transform = "1.0.0-SNAPSHOT"
 glance = "1.1.1"
 startup = "1.2.0"
 
@@ -44,6 +45,7 @@ androidx-datastore-preferences = { group = "androidx.datastore", name = "datasto
 androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidget", version.ref = "glance" }
 androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-appstate = { group = "androidx.appstate", name = "appstate", version.ref = "appstate"}
+androidx-transform = { group = "androidx.appstate", name = "appstate-transform", version.ref = "transform"}
 androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
 
 [plugins]
