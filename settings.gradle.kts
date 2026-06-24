@@ -21,7 +21,7 @@ dependencyResolutionManagement {
         mavenCentral()
         maven("/usr/local/google/home/jbwoods/androidx-main/out/repository")
         maven {
-            url = uri("https://androidx.dev/snapshots/builds/15657030/artifacts/repository")
+            url = uri("https://androidx.dev/snapshots/builds/15697335/artifacts/repository")
         }
     }
 }
