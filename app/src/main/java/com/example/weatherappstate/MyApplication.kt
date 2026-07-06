@@ -7,19 +7,36 @@ import androidx.appstate.transform.listener
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.core.DataStoreFactory
+import androidx.datastore.core.okio.OkioStorage
+import androidx.datastore.dataStoreFile
+import com.example.appstate.datastore.AppStatePreferences
+import com.example.appstate.datastore.AppStateSerializer
+import com.example.appstate.datastore.edit
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.json.Json
+import okio.FileSystem
+import okio.Path.Companion.toPath
 
-val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
+private lateinit var dataStoreInstance: DataStore<AppStatePreferences>
+
+val Context.dataStore: DataStore<AppStatePreferences>
+    get() {
+        synchronized(this) {
+            if (!::dataStoreInstance.isInitialized) {
+                dataStoreInstance = DataStoreFactory.create(
+                    storage = OkioStorage(FileSystem.SYSTEM, AppStateSerializer) {
+                        dataStoreFile("settings").absolutePath.toPath()
+                    }
+                )
+            }
+            return dataStoreInstance
+        }
+    }
 
 class MyApplication : Application() {
     val appState = AppState()
@@ -28,26 +45,24 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val prefKey = stringPreferencesKey("selected_city")
-        val citiesKey = stringPreferencesKey("city_list")
+        val selectedKey = SelectedCityAppStateKey
+        val stateKey = CitiesAppStateKey("US")
 
         // Load the initial selected city and city list from DataStore
         scope.launch {
             try {
-                val preferences = dataStore.data.first()
+                val state = dataStore.data.first()
                 
                 // Load selected city
-                val cityJson = preferences[prefKey]
-                if (cityJson != null) {
-                    val city = Json.decodeFromString<City>(cityJson)
+                val city = state[selectedKey]
+                if (city != null) {
                     appState.setSelectedCity(city)
                 }
                 
                 // Load city list
-                val cityListJson = preferences[citiesKey]
-                if (cityListJson != null) {
-                    val cities = Json.decodeFromString<List<City>>(cityListJson)
-                    appState.setState(CitiesAppStateKey("US"), cities)
+                val cities = state[stateKey]
+                if (cities != null) {
+                    appState.setState(stateKey, cities)
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -65,12 +80,10 @@ class MyApplication : Application() {
                 val cities by appState.cityList("US")
                 LaunchedEffect(city, cities) {
                     try {
-                        val cityJson = Json.encodeToString(city)
-                        val citiesJson = Json.encodeToString(cities)
                         withContext(Dispatchers.IO) {
                             dataStore.edit { settings ->
-                                settings[prefKey] = cityJson
-                                settings[citiesKey] = citiesJson
+                                settings[selectedKey] = city
+                                settings[stateKey] = cities
                             }
                         }
                     } catch (e: Exception) {
