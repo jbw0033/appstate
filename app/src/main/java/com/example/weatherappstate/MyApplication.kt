@@ -3,6 +3,7 @@ package com.example.weatherappstate
 import android.app.Application
 import android.content.Context
 import androidx.appstate.AppState
+import androidx.appstate.transform.listener
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.datastore.core.DataStore
@@ -57,22 +58,24 @@ class MyApplication : Application() {
             }
         }
 
-        // Save states to DataStore whenever they change
-        appState.addAppStateListener {
-            val city by appState.selectedCity()
-            val cities by appState.cityList("US")
-            LaunchedEffect(city, cities) {
-                try {
-                    val cityJson = Json.encodeToString(city)
-                    val citiesJson = Json.encodeToString(cities)
-                    withContext(Dispatchers.IO) {
-                        dataStore.edit { settings ->
-                            settings[prefKey] = cityJson
-                            settings[citiesKey] = citiesJson
+        scope.launch {
+            // Save states to DataStore whenever they change
+            listener {
+                val city by appState.selectedCity()
+                val cities by appState.cityList("US")
+                LaunchedEffect(city, cities) {
+                    try {
+                        val cityJson = Json.encodeToString(city)
+                        val citiesJson = Json.encodeToString(cities)
+                        withContext(Dispatchers.IO) {
+                            dataStore.edit { settings ->
+                                settings[prefKey] = cityJson
+                                settings[citiesKey] = citiesJson
+                            }
                         }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                } catch (e: Exception) {
-                    e.printStackTrace()
                 }
             }
         }

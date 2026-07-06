@@ -1,7 +1,7 @@
 package com.example.weatherappstate.widget
 
 import android.content.Context
-import androidx.appstate.transform.transform
+import androidx.appstate.transform.listener
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
@@ -13,23 +13,25 @@ import androidx.glance.appwidget.GlanceAppWidgetManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.launch
 
 abstract class AppStateGlanceWidget<T: Any> : GlanceAppWidget() {
     val map = mutableMapOf<GlanceId, MutableState<T>>()
     val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     internal fun startTransform(context: Context) {
-        transform(context = EmptyCoroutineContext, scope = scope, defaultValue = Unit, onUpdate = {
-            val glanceIds by produceState(listOf()) {
-                value = GlanceAppWidgetManager(context).getGlanceIds(this@AppStateGlanceWidget::class.java)
-            }
-            glanceIds.forEach { id ->
-                val data = provideData(context, id)
-                val state = map.getOrPut(id) { mutableStateOf(data) }
-                state.value = data
-            }
-        })
+        scope.launch {
+            listener(dispatcher = Dispatchers.Main, onUpdate = {
+                val glanceIds by produceState(listOf()) {
+                    value = GlanceAppWidgetManager(context).getGlanceIds(this@AppStateGlanceWidget::class.java)
+                }
+                glanceIds.forEach { id ->
+                    val data = provideData(context, id)
+                    val state = map.getOrPut(id) { mutableStateOf(data) }
+                    state.value = data
+                }
+            })
+        }
     }
 
     @Composable
