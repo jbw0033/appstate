@@ -42,6 +42,7 @@ dependencies {
     implementation(libs.androidx.appstate)
     implementation(libs.androidx.transform)
     implementation(project(":navigation3-appstate"))
+    implementation(project(":appstate-datastore"))
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.compose.material3)
