@@ -4,7 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.example.appstate.weatherappstate.ui.theme.WeatherAppStateTheme
+import com.example.appstate.content.MyApplication
+import com.example.appstate.weatherappstate.ui.theme.AppStateTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -12,7 +13,7 @@ class MainActivity : ComponentActivity() {
         val appState = (application as MyApplication).appState
         enableEdgeToEdge()
         setContent {
-            WeatherAppStateTheme {
+            AppStateTheme {
                 WeatherApp(appState)
             }
         }

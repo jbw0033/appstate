@@ -3,6 +3,7 @@ package com.example.appstate.weatherappstate
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
+import com.example.appstate.content.MyApplication
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
-        android:name="com.example.appstate.weatherappstate.MyApplication"
+        android:name="com.example.appstate.content.MyApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -13,18 +13,31 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.WeatherAppState">
+        android:theme="@style/Theme.AppState">
         <activity
             android:name="com.example.appstate.weatherappstate.MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.WeatherAppState">
+            android:theme="@style/Theme.AppState">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.example.appstate.loginAppState.BasicLoginActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppState">
+        </activity>
+        <activity
+            android:name="com.example.appstate.simpleInComposition.SimpleInCompositionActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppState" />
+        <activity
+            android:name="com.example.appstate.simpleOutOfComposition.SimpleOutOfCompositionActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppState" />
 
         <service android:name="com.example.appstate.weatherappstate.WeatherService" android:exported="false" />
 

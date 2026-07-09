@@ -23,8 +23,8 @@ import androidx.glance.layout.padding
 import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
+import com.example.appstate.content.MyApplication
 import com.example.appstate.weatherappstate.MainActivity
-import com.example.appstate.weatherappstate.MyApplication
 import com.example.appstate.weatherappstate.selectedCity
 import kotlinx.serialization.Serializable
 

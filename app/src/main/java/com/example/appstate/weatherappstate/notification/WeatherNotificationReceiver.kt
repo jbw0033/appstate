@@ -3,7 +3,7 @@ package com.example.appstate.weatherappstate.notification
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.example.appstate.weatherappstate.MyApplication
+import com.example.appstate.content.MyApplication
 import com.example.appstate.weatherappstate.cityList
 import com.example.appstate.weatherappstate.selectedCity
 import com.example.appstate.weatherappstate.setSelectedCity

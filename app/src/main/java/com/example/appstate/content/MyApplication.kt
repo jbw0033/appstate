@@ -1,4 +1,4 @@
-package com.example.appstate.weatherappstate
+package com.example.appstate.content
 
 import android.app.Application
 import android.content.Context
@@ -11,6 +11,7 @@ import androidx.datastore.dataStoreFile
 import com.example.appstate.datastore.AppStatePreferences
 import com.example.appstate.datastore.AppStateSerializer
 import com.example.appstate.datastore.addAppStateToDataStoreListener
+import com.example.appstate.weatherappstate.WeatherService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -51,7 +52,7 @@ class MyApplication : Application() {
                     e.printStackTrace()
                 }
             }
-            
+
             // Start the WeatherService immediately in parallel
             val serviceIntent = Intent(this@MyApplication, WeatherService::class.java)
             startService(serviceIntent)
