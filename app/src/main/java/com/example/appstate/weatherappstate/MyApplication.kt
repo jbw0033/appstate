@@ -1,7 +1,8 @@
-package com.example.weatherappstate
+package com.example.appstate.weatherappstate
 
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import androidx.appstate.AppState
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
@@ -52,7 +53,7 @@ class MyApplication : Application() {
             }
             
             // Start the WeatherService immediately in parallel
-            val serviceIntent = android.content.Intent(this@MyApplication, WeatherService::class.java)
+            val serviceIntent = Intent(this@MyApplication, WeatherService::class.java)
             startService(serviceIntent)
         }
     }

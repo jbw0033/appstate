@@ -1,8 +1,8 @@
-package com.example.weatherappstate.initializer
+package com.example.appstate.weatherappstate.initializer
 
 import android.content.Context
 import androidx.startup.Initializer
-import com.example.weatherappstate.widget.WeatherWidget
+import com.example.appstate.weatherappstate.widget.WeatherWidget
 
 class WeatherWidgetInitializer : Initializer<WeatherWidget> {
     override fun create(context: Context): WeatherWidget {

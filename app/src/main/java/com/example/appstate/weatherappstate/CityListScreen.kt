@@ -1,4 +1,4 @@
-package com.example.weatherappstate
+package com.example.appstate.weatherappstate
 
 import android.content.Intent
 import androidx.appstate.AppState
@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberSwipeToDismissBoxState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -68,7 +69,7 @@ fun CityListScreen(appState: AppState, onSelectedCity: (City) -> Unit) {
                     val dismissState = rememberSwipeToDismissBoxState()
                     
                     if (dismissState.currentValue == SwipeToDismissBoxValue.StartToEnd) {
-                        androidx.compose.runtime.LaunchedEffect(Unit) {
+                        LaunchedEffect(Unit) {
                             appState.removeCity(city)
                         }
                     }

@@ -1,4 +1,4 @@
-package com.example.weatherappstate
+package com.example.appstate.weatherappstate
 
 import androidx.appstate.AppState
 import androidx.appstate.transform.transform

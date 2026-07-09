@@ -1,4 +1,4 @@
-package com.example.weatherappstate
+package com.example.appstate.weatherappstate
 
 import android.app.Service
 import android.content.Intent

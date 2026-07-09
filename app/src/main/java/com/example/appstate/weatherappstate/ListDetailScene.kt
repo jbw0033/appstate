@@ -1,4 +1,4 @@
-package com.example.weatherappstate
+package com.example.appstate.weatherappstate
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.slideInHorizontally

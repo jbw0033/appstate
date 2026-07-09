@@ -1,4 +1,4 @@
-package com.example.weatherappstate.widget
+package com.example.appstate.weatherappstate.widget
 
 import android.content.Context
 import androidx.appstate.transform.listener

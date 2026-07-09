@@ -1,4 +1,4 @@
-package com.example.weatherappstate
+package com.example.appstate.weatherappstate
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
