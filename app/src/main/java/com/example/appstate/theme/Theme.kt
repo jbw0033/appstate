@@ -1,4 +1,4 @@
-package com.example.appstate.weatherappstate.ui.theme
+package com.example.appstate.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

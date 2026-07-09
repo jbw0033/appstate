@@ -21,7 +21,7 @@ import com.example.appstate.content.Login
 import com.example.appstate.content.LoginStateKey
 import com.example.appstate.content.MyApplication
 import com.example.appstate.content.Second
-import com.example.appstate.weatherappstate.ui.theme.AppStateTheme
+import com.example.appstate.theme.AppStateTheme
 import com.example.navigation3.appstate.popUserFlow
 import com.example.navigation3.appstate.startUserFlow
 import com.example.navigation3.appstate.userFlow

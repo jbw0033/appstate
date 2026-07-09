@@ -24,7 +24,7 @@ import androidx.glance.text.FontWeight
 import androidx.glance.text.Text
 import androidx.glance.text.TextStyle
 import com.example.appstate.content.MyApplication
-import com.example.appstate.weatherappstate.MainActivity
+import com.example.appstate.weatherappstate.WeatherActivity
 import com.example.appstate.weatherappstate.selectedCity
 import kotlinx.serialization.Serializable
 
@@ -49,7 +49,7 @@ class WeatherWidget : AppStateGlanceWidget<WidgetData>() {
                 modifier = GlanceModifier
                     .fillMaxSize()
                     .background(Color.White)
-                    .clickable(actionStartActivity(Intent(context, MainActivity::class.java)))
+                    .clickable(actionStartActivity(Intent(context, WeatherActivity::class.java)))
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalAlignment = Alignment.CenterHorizontally

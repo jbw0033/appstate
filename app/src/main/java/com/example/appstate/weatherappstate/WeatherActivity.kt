@@ -5,9 +5,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import com.example.appstate.content.MyApplication
-import com.example.appstate.weatherappstate.ui.theme.AppStateTheme
+import com.example.appstate.theme.AppStateTheme
 
-class MainActivity : ComponentActivity() {
+class WeatherActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val appState = (application as MyApplication).appState

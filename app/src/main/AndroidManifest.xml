@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppState">
         <activity
-            android:name="com.example.appstate.weatherappstate.MainActivity"
+            android:name="com.example.appstate.weatherappstate.WeatherActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.AppState">
