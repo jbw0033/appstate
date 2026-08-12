@@ -29,5 +29,7 @@ dependencyResolutionManagement {
 rootProject.name = "WeatherAppState"
 include(":app")
 include(":navigation3-appstate")
+include(":watchapp")
+include(":phoneapp")
 
  
