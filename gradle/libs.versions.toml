@@ -18,7 +18,6 @@ transform = "1.0.0-SNAPSHOT"
 glance = "1.1.1"
 startup = "1.2.0"
 
-
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -48,6 +47,7 @@ androidx-glance-appwidget = { group = "androidx.glance", name = "glance-appwidge
 androidx-compose-material-icons-core = { group = "androidx.compose.material", name = "material-icons-core" }
 androidx-appstate = { group = "androidx.appstate", name = "appstate", version.ref = "appstate"}
 androidx-transform = { group = "androidx.appstate", name = "appstate-transform", version.ref = "transform" }
+androidx-appstate-datastore = { group = "androidx.appstate", name = "appstate-datastore", version.ref = "appstate" }
 androidx-startup-runtime = { group = "androidx.startup", name = "startup-runtime", version.ref = "startup" }
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
 

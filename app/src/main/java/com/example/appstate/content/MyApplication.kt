@@ -8,9 +8,9 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.core.okio.OkioStorage
 import androidx.datastore.dataStoreFile
-import com.example.appstate.datastore.AppStatePreferences
-import com.example.appstate.datastore.AppStateSerializer
-import com.example.appstate.datastore.addAppStateToDataStoreListener
+import androidx.appstate.datastore.AppStatePreferences
+import androidx.appstate.datastore.AppStateSerializer
+import androidx.appstate.datastore.addAppStateToDataStoreListener
 import com.example.appstate.weatherappstate.WeatherService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

@@ -3,7 +3,7 @@ package com.example.appstate.weatherappstate
 import androidx.appstate.AppState
 import androidx.appstate.AppStateKey
 import androidx.compose.runtime.State
-import com.example.appstate.datastore.PersistToDataStore
+import androidx.appstate.datastore.PersistToDataStore
 import kotlinx.serialization.Serializable
 
 fun AppState.cityList(country: String = "US"): State<List<City>> {
