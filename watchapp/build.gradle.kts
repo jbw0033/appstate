@@ -60,6 +60,9 @@ dependencies {
     implementation(libs.tiles.tooling.preview)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.wear.compose.material3)
+    implementation(libs.wear.compose.foundation)
+    implementation(libs.wear.compose.ui.tooling)
     implementation(libs.watchface.complications.data.source.ktx)
     implementation(libs.wear.tooling.preview)
 }
