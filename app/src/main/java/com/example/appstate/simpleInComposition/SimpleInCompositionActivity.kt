@@ -27,13 +27,13 @@ class SimpleInCompositionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val appState = (application as MyApplication).appState
+        val stateStore = (application as MyApplication).stateStore
         setContent {
             AppStateTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-                    val backStack by transform(defaultValue = listOf(First)) {
-                        val userFlow = appState.userFlow("main")
+                    val backStack by transform(initialValue = listOf<Any>(First)) {
+                        val userFlow = stateStore.userFlow("main")
                         if (userFlow.firstOrNull() != First) {
                             listOf(First) + userFlow
                         } else {
@@ -46,14 +46,14 @@ class SimpleInCompositionActivity : ComponentActivity() {
                         backStack,
                         modifier = Modifier.padding(innerPadding),
                         onBack = {
-                            appState.popUserFlow("main")
+                            stateStore.popUserFlow("main")
                         },
                         entryProvider = entryProvider {
                             entry<First> {
                                 Column {
                                     Text("First")
                                     Button(onClick = {
-                                        appState.startUserFlow("main", Second("my Id"))
+                                        stateStore.startUserFlow("main", Second("my Id"))
                                     }) {
                                         Text("Go to Second")
                                     }

@@ -1,8 +1,8 @@
 package com.example.appstatewatch
 
 import android.app.Application
-import androidx.appstate.AppState
+import androidx.appstate.statestore.StateStore
 
 class MyApplication : Application() {
-    val appState = AppState()
+    val stateStore = StateStore()
 }

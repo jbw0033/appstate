@@ -1,8 +1,8 @@
 package com.example.appstate.content
 
-import androidx.appstate.AppStateKey
+import androidx.appstate.statestore.StateStoreKey
 
-object LoginStateKey : AppStateKey<Boolean>()
+object LoginStateKey : StateStoreKey<Boolean>(false)
 
 object First
 data class Second(val id: String)

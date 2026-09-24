@@ -1,7 +1,7 @@
 package com.example.appstate.weatherappstate
 
 import android.content.Intent
-import androidx.appstate.AppState
+import androidx.appstate.statestore.StateStore
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -41,9 +41,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.serialization.Serializable
 
 @Composable
-fun CityListScreen(appState: AppState, onSelectedCity: (City) -> Unit) {
-    val cities = appState.cityList().value
-    val isLoading = appState.isLoading().value
+fun CityListScreen(stateStore: StateStore, onSelectedCity: (City) -> Unit) {
+    val cities = stateStore.cityList().value
+    val isLoading = stateStore.isLoading().value
     var showAddDialog by remember { mutableStateOf(false) }
     val context = LocalContext.current
 
@@ -70,7 +70,7 @@ fun CityListScreen(appState: AppState, onSelectedCity: (City) -> Unit) {
                     
                     if (dismissState.currentValue == SwipeToDismissBoxValue.StartToEnd) {
                         LaunchedEffect(Unit) {
-                            appState.removeCity(city)
+                            stateStore.removeCity(city)
                         }
                     }
                     
@@ -97,9 +97,9 @@ fun CityListScreen(appState: AppState, onSelectedCity: (City) -> Unit) {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .height(120.dp)
-                                .background(if (appState.selectedCity().value == city) Color.LightGray else Color.White)
+                                .background(if (stateStore.selectedCity().value == city) Color.LightGray else Color.White)
                                 .clickable {
-                                    appState.setSelectedCity(city)
+                                    stateStore.setSelectedCity(city)
                                     onSelectedCity(city)
                                 }
                                 .padding(horizontal = 16.dp),

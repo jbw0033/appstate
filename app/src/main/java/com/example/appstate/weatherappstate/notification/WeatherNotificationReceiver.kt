@@ -11,14 +11,14 @@ import com.example.appstate.weatherappstate.setSelectedCity
 class WeatherNotificationReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action == "NEXT_CITY") {
-            val appState = (context.applicationContext as MyApplication).appState
-            val currentCity = appState.selectedCity().value
-            val cities = appState.cityList("US").value
+            val stateStore = (context.applicationContext as MyApplication).stateStore
+            val currentCity = stateStore.selectedCity().value
+            val cities = stateStore.cityList("US").value
 
             if (cities.isNotEmpty()) {
                 val currentIndex = cities.indexOf(currentCity)
                 val nextIndex = (currentIndex + 1) % cities.size
-                appState.setSelectedCity(cities[nextIndex])
+                stateStore.setSelectedCity(cities[nextIndex])
             }
         }
     }

@@ -10,11 +10,11 @@ import com.example.appstate.theme.AppStateTheme
 class WeatherActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val appState = (application as MyApplication).appState
+        val stateStore = (application as MyApplication).stateStore
         enableEdgeToEdge()
         setContent {
             AppStateTheme {
-                WeatherApp(appState)
+                WeatherApp(stateStore)
             }
         }
     }

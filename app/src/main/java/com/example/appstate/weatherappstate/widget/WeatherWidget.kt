@@ -35,8 +35,8 @@ class WeatherWidget : AppStateGlanceWidget<WidgetData>() {
         context: Context,
         id: GlanceId
     ): WidgetData {
-        val appState = (context.applicationContext as MyApplication).appState
-        val cityState = appState.selectedCity()
+        val stateStore = (context.applicationContext as MyApplication).stateStore
+        val cityState = stateStore.selectedCity()
         val city = cityState.value
         return if (city == null) WidgetData("No city selected", 0)
         else WidgetData(city.name, city.temperature)

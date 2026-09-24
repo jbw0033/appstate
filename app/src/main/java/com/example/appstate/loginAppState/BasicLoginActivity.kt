@@ -30,13 +30,13 @@ class BasicLoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val appState = (application as MyApplication).appState
+        val stateStore = (application as MyApplication).stateStore
         setContent {
             AppStateTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 
-                    val mainBackStack = rememberDecoratedNavEntries(transform(defaultValue = listOf(First)) {
-                        val userFlow = appState.userFlow("main")
+                    val mainBackStack = rememberDecoratedNavEntries(transform(initialValue = listOf<Any>(First)) {
+                        val userFlow = stateStore.userFlow("main")
                         if (userFlow.firstOrNull() != First) {
                             listOf(First) + userFlow
                         } else {
@@ -48,12 +48,12 @@ class BasicLoginActivity : ComponentActivity() {
                                 Column {
                                     Text("First")
                                     Button(onClick = {
-                                        appState.startUserFlow("main", Second("my Id"))
+                                        stateStore.startUserFlow("main", Second("my Id"))
                                     }) {
                                         Text("Go to Second")
                                     }
                                     Button(onClick = {
-                                        appState.updateState(LoginStateKey, false) {
+                                        stateStore.updateState(LoginStateKey, false) {
                                             !it
                                         }
                                     }) {
@@ -65,7 +65,7 @@ class BasicLoginActivity : ComponentActivity() {
                                 Column {
                                     Text("Second")
                                     Button(onClick = {
-                                        appState.updateState(LoginStateKey, false) {
+                                        stateStore.updateState(LoginStateKey, false) {
                                             !it
                                         }
                                     }) {
@@ -76,8 +76,8 @@ class BasicLoginActivity : ComponentActivity() {
 
                         })
 
-                    val loginBackStack = rememberDecoratedNavEntries(transform(defaultValue = listOf(Login))  {
-                        appState.userFlow("login").ifEmpty {
+                    val loginBackStack = rememberDecoratedNavEntries(transform(initialValue = listOf<Any>(Login))  {
+                        stateStore.userFlow("login").ifEmpty {
                             listOf(Login)
                         }
                     }.value,
@@ -88,7 +88,7 @@ class BasicLoginActivity : ComponentActivity() {
                             Column {
                                 Text("Ready to login")
                                 Button(onClick = {
-                                    appState.setState(LoginStateKey, true)
+                                    stateStore.setState(LoginStateKey, true)
                                 }) {
                                     Text("Login")
                                 }
@@ -96,7 +96,7 @@ class BasicLoginActivity : ComponentActivity() {
                         }
                     })
 
-                    val isLoggedIn = appState.getState(LoginStateKey, false).value
+                    val isLoggedIn = stateStore.getState(LoginStateKey, false).value
 
                     val currentBackStack = if (!isLoggedIn) {
                         loginBackStack
@@ -109,9 +109,9 @@ class BasicLoginActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding),
                         onBack = {
                             if (isLoggedIn) {
-                                appState.popUserFlow("main")
+                                stateStore.popUserFlow("main")
                             } else {
-                                appState.popUserFlow("login")
+                                stateStore.popUserFlow("login")
                             }
                         }
                     )

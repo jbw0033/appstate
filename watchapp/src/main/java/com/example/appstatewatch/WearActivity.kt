@@ -34,7 +34,7 @@ import androidx.wear.compose.material3.lazy.rememberTransformationSpec
 import androidx.wear.compose.material3.lazy.transformedHeight
 import androidx.wear.compose.ui.tooling.preview.WearPreviewDevices
 import androidx.wear.compose.ui.tooling.preview.WearPreviewFontScales
-import androidx.appstate.AppState
+import androidx.appstate.statestore.StateStore
 import com.example.appstatewatch.presentation.theme.AppStateWatchTheme
 import com.example.navigation3.appstate.popUserFlow
 import com.example.navigation3.appstate.startUserFlow
@@ -54,20 +54,20 @@ class WearActivity : ComponentActivity(), DataClient.OnDataChangedListener {
     val dataClient by lazy { Wearable.getDataClient(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val appState = (application as MyApplication).appState
+        val stateStore = (application as MyApplication).stateStore
         super.onCreate(savedInstanceState)
         lifecycleScope.launch {
             val key = loadInitialState()
             if (key != null && key != "end") {
-                appState.startUserFlow("main", key)
+                stateStore.startUserFlow("main", key)
             }
         }
 
         setContent {
             WearApp(
                 "Android",
-                appState
-            ) { sendKey(appState) }
+                stateStore
+            ) { sendKey(stateStore) }
         }
     }
 
@@ -81,10 +81,10 @@ class WearActivity : ComponentActivity(), DataClient.OnDataChangedListener {
         dataClient.removeListener(this)
     }
 
-    private fun sendKey(appState: AppState) {
+    private fun sendKey(stateStore: StateStore) {
         lifecycleScope.launch {
             try {
-                val currentState = appState.userFlow("main").lastOrNull() as? String ?: "end"
+                val currentState = stateStore.userFlow("main").lastOrNull() as? String ?: "end"
                 val request =
                     PutDataMapRequest
                         .create("/appstate")
@@ -109,7 +109,7 @@ class WearActivity : ComponentActivity(), DataClient.OnDataChangedListener {
             Log.d(TAG, "DataItem saved: $event")
             // DataItem changed
             if (event.type == DataEvent.TYPE_CHANGED) {
-                val appState = (application as MyApplication).appState
+                val stateStore = (application as MyApplication).stateStore
                 val key = event.dataItem.data?.decodeToString()
                     ?.substringAfter("appstate")
                     ?.substringBefore("time")
@@ -120,7 +120,7 @@ class WearActivity : ComponentActivity(), DataClient.OnDataChangedListener {
                 }
 
                 if (key != null && key != "end") {
-                    appState.startUserFlow("main", key)
+                    stateStore.startUserFlow("main", key)
                 }
                 Log.d(TAG, "DataItem saved: $key")
             } else if (event.type == DataEvent.TYPE_DELETED) {
@@ -152,12 +152,12 @@ class WearActivity : ComponentActivity(), DataClient.OnDataChangedListener {
 @Composable
 fun WearApp(
     greetingName: String,
-    appState: AppState,
+    stateStore: StateStore,
     sendKey: () -> Unit = { }) {
     AppStateWatchTheme {
         AppScaffold {
-            val backStack by transform(defaultValue = listOf("home")) {
-                val userFlow = appState.userFlow("main")
+            val backStack by transform(initialValue = listOf<Any>("home")) {
+                val userFlow = stateStore.userFlow("main")
                 if (userFlow.firstOrNull() != "home") {
                     listOf("home") + userFlow
                 } else {
@@ -186,7 +186,7 @@ fun WearApp(
                     backStack,
                     modifier = Modifier.padding(contentPadding),
                     onBack = {
-                        appState.popUserFlow("main")
+                        stateStore.popUserFlow("main")
                         sendKey()
                     },
                     entryProvider = entryProvider {
@@ -206,7 +206,7 @@ fun WearApp(
                                 item {
                                     Button(
                                         onClick = {
-                                            appState.startUserFlow("main", "A")
+                                            stateStore.startUserFlow("main", "A")
                                             sendKey()
                                                   },
                                         modifier = Modifier
@@ -219,7 +219,7 @@ fun WearApp(
                                 }
                                 item {
                                     Button(
-                                        onClick = { appState.startUserFlow("main", "B")
+                                        onClick = { stateStore.startUserFlow("main", "B")
                                             sendKey()},
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -231,7 +231,7 @@ fun WearApp(
                                 }
                                 item {
                                     Button(
-                                        onClick = { appState.startUserFlow("main", "C")
+                                        onClick = { stateStore.startUserFlow("main", "C")
                                             sendKey()},
                                         modifier = Modifier
                                             .fillMaxWidth()
@@ -247,7 +247,7 @@ fun WearApp(
                             Column {
                                 Text("We are now on A", modifier = Modifier.padding(contentPadding))
                                 Button(
-                                    onClick = { appState.startUserFlow("main", "B")
+                                    onClick = { stateStore.startUserFlow("main", "B")
                                         sendKey()},
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -255,7 +255,7 @@ fun WearApp(
                                     Text("Button B")
                                 }
                                 Button(
-                                    onClick = { appState.startUserFlow("main", "C")
+                                    onClick = { stateStore.startUserFlow("main", "C")
                                         sendKey()},
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -269,7 +269,7 @@ fun WearApp(
                                 Text("This is B", modifier = Modifier.padding(contentPadding))
                                 Button(
                                     onClick = {
-                                        appState.startUserFlow("main", "A")
+                                        stateStore.startUserFlow("main", "A")
                                         sendKey()
                                     },
                                     modifier = Modifier
@@ -278,7 +278,7 @@ fun WearApp(
                                     Text("Button A")
                                 }
                                 Button(
-                                    onClick = { appState.startUserFlow("main", "C")
+                                    onClick = { stateStore.startUserFlow("main", "C")
                                         sendKey()},
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -292,7 +292,7 @@ fun WearApp(
                                 Text("This is C", modifier = Modifier.padding(contentPadding))
                                 Button(
                                     onClick = {
-                                        appState.startUserFlow("main", "A")
+                                        stateStore.startUserFlow("main", "A")
                                         sendKey()
                                     },
                                     modifier = Modifier
@@ -301,7 +301,7 @@ fun WearApp(
                                     Text("Button A")
                                 }
                                 Button(
-                                    onClick = { appState.startUserFlow("main", "B")
+                                    onClick = { stateStore.startUserFlow("main", "B")
                                         sendKey()},
                                     modifier = Modifier
                                         .fillMaxWidth()
@@ -320,5 +320,5 @@ fun WearApp(
 @WearPreviewFontScales
 @Composable
 fun DefaultPreview() {
-    WearApp("Preview Android", AppState())
+    WearApp("Preview Android", StateStore())
 }

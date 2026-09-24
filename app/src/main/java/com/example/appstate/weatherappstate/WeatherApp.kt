@@ -1,6 +1,6 @@
 package com.example.appstate.weatherappstate
 
-import androidx.appstate.AppState
+import androidx.appstate.statestore.StateStore
 import androidx.appstate.transform.transform
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -15,10 +15,10 @@ import com.example.navigation3.appstate.startUserFlow
 import com.example.navigation3.appstate.userFlow
 
 @Composable
-fun WeatherApp(appState: AppState) {
+fun WeatherApp(stateStore: StateStore) {
     Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-        val backStack by transform(defaultValue = listOf(CityList)) {
-            val userFlow = appState.userFlow("main")
+        val backStack by transform(initialValue = listOf<Any>(CityList)) {
+            val userFlow = stateStore.userFlow("main")
             if (userFlow.firstOrNull() != CityList) {
                 listOf(CityList) + userFlow
             } else {
@@ -30,12 +30,12 @@ fun WeatherApp(appState: AppState) {
             modifier = Modifier.padding(innerPadding),
             sceneStrategies = listOf(rememberListDetailSceneStrategy()),
             onBack = {
-                appState.popUserFlow("main")
+                stateStore.popUserFlow("main")
             },
             entryProvider = entryProvider {
                 entry<CityList>(metadata = ListDetailScene.listPane()) {
-                    CityListScreen(appState) {
-                        appState.startUserFlow("main", it)
+                    CityListScreen(stateStore) {
+                        stateStore.startUserFlow("main", it)
                     }
                 }
                 entry<City>(metadata = ListDetailScene.detailPane()) {

@@ -1,53 +1,51 @@
 package com.example.appstate.weatherappstate
 
-import androidx.appstate.AppState
-import androidx.appstate.AppStateKey
+import androidx.appstate.statestore.StateStore
+import androidx.appstate.statestore.StateStoreKey
 import androidx.compose.runtime.State
 import androidx.appstate.datastore.PersistToDataStore
 import kotlinx.serialization.Serializable
 
-fun AppState.cityList(country: String = "US"): State<List<City>> {
-    return getState(CitiesAppStateKey(country), emptyList())
+fun StateStore.cityList(country: String = "US"): State<List<City>> {
+    return getState(CitiesStateStoreKey(country), emptyList())
 }
 
-fun AppState.isLoading(): State<Boolean> {
-    return getState(IsLoadingAppStateKey, false)
+fun StateStore.isLoading(): State<Boolean> {
+    return getState(IsLoadingStateStoreKey, false)
 }
 
-fun AppState.setIsLoading(loading: Boolean) {
-    setState(IsLoadingAppStateKey, loading)
+fun StateStore.setIsLoading(loading: Boolean) {
+    setState(IsLoadingStateStoreKey, loading)
 }
 
-fun AppState.addCity(city: City, country: String = "US") {
+fun StateStore.addCity(city: City, country: String = "US") {
     val currentList = cityList(country).value
-    setState(CitiesAppStateKey(country), currentList + city)
+    setState(CitiesStateStoreKey(country), currentList + city)
 }
 
-fun AppState.removeCity(city: City, country: String = "US") {
+fun StateStore.removeCity(city: City, country: String = "US") {
     val currentList = cityList(country).value
-    setState(CitiesAppStateKey(country), currentList - city)
+    setState(CitiesStateStoreKey(country), currentList - city)
 }
 
-fun AppState.setSelectedCity(city: City) {
+fun StateStore.setSelectedCity(city: City) {
     return setState(
-        stateKey = SelectedCityAppStateKey,
+        stateKey = SelectedCityStateStoreKey,
         value = city
     )
 }
 
-fun AppState.selectedCity(): State<City?> {
+fun StateStore.selectedCity(): State<City?> {
     return getState(
-        stateKey = SelectedCityAppStateKey,
+        stateKey = SelectedCityStateStoreKey,
         null as City?
     )
 }
 
 @Serializable
-@PersistToDataStore
-data class CitiesAppStateKey(val country: String) : AppStateKey<List<City>>()
+data class CitiesStateStoreKey(val country: String) : StateStoreKey<List<City>>(emptyList()), PersistToDataStore
 
 @Serializable
-@PersistToDataStore
-object SelectedCityAppStateKey : AppStateKey<City?>()
+object SelectedCityStateStoreKey : StateStoreKey<City?>(null), PersistToDataStore
 
-object IsLoadingAppStateKey : AppStateKey<Boolean>()
+object IsLoadingStateStoreKey : StateStoreKey<Boolean>(false)

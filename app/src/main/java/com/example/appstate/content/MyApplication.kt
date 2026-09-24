@@ -1,42 +1,18 @@
 package com.example.appstate.content
 
 import android.app.Application
-import android.content.Context
 import android.content.Intent
-import androidx.appstate.AppState
-import androidx.datastore.core.DataStore
-import androidx.datastore.core.DataStoreFactory
-import androidx.datastore.core.okio.OkioStorage
+import androidx.appstate.datastore.syncToDataStore
+import androidx.appstate.statestore.StateStore
 import androidx.datastore.dataStoreFile
-import androidx.appstate.datastore.AppStatePreferences
-import androidx.appstate.datastore.AppStateSerializer
-import androidx.appstate.datastore.addAppStateToDataStoreListener
 import com.example.appstate.weatherappstate.WeatherService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
-import okio.FileSystem
-import okio.Path.Companion.toPath
-
-private lateinit var dataStoreInstance: DataStore<AppStatePreferences>
-
-val Context.dataStore: DataStore<AppStatePreferences>
-    get() {
-        synchronized(this) {
-            if (!::dataStoreInstance.isInitialized) {
-                dataStoreInstance = DataStoreFactory.create(
-                    storage = OkioStorage(FileSystem.SYSTEM, AppStateSerializer) {
-                        dataStoreFile("settings").absolutePath.toPath()
-                    }
-                )
-            }
-            return dataStoreInstance
-        }
-    }
 
 class MyApplication : Application() {
-    val appState = AppState()
+    val stateStore = StateStore()
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
 
     override fun onCreate() {
@@ -47,7 +23,7 @@ class MyApplication : Application() {
             // Start the listener in a child coroutine so it doesn't block the outer scope
             launch {
                 try {
-                    appState.addAppStateToDataStoreListener(dataStore)
+                    stateStore.syncToDataStore(dataStoreFile("settings").absolutePath, this)
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }

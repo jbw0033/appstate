@@ -16,7 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.ui.NavDisplay
-import androidx.appstate.AppState
+import androidx.appstate.statestore.StateStore
 import com.example.appstatewatch.theme.AppStateWatchTheme
 import com.example.navigation3.appstate.popUserFlow
 import com.example.navigation3.appstate.startUserFlow
@@ -38,12 +38,12 @@ class PhoneActivity : ComponentActivity(), DataClient.OnDataChangedListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        val appState = (application as MyApplication).appState
+        val stateStore = (application as MyApplication).stateStore
         setContent {
             AppStateWatchTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    val backStack by transform(defaultValue = listOf("A")) {
-                        val userFlow = appState.userFlow("main")
+                    val backStack by transform(initialValue = listOf<Any>("A")) {
+                        val userFlow = stateStore.userFlow("main")
                         if (userFlow.firstOrNull() != "A") {
                             listOf("A") + userFlow
                         } else {
@@ -55,22 +55,22 @@ class PhoneActivity : ComponentActivity(), DataClient.OnDataChangedListener {
                         backStack,
                         modifier = Modifier.padding(innerPadding),
                         onBack = {
-                            appState.popUserFlow("main")
-                            sendKey(appState = appState)
+                            stateStore.popUserFlow("main")
+                            sendKey(stateStore = stateStore)
                         },
                         entryProvider = entryProvider {
                             entry("A") {
                                 Column {
                                     Text("First")
                                     Button(onClick = {
-                                        appState.startUserFlow("main", "B")
-                                        sendKey(appState = appState)
+                                        stateStore.startUserFlow("main", "B")
+                                        sendKey(stateStore = stateStore)
                                     }) {
                                         Text("Go to B")
                                     }
                                     Button(onClick = {
-                                        appState.startUserFlow("main", "C")
-                                        sendKey(appState = appState)
+                                        stateStore.startUserFlow("main", "C")
+                                        sendKey(stateStore = stateStore)
                                     }) {
                                         Text("Go to C")
                                     }
@@ -80,14 +80,14 @@ class PhoneActivity : ComponentActivity(), DataClient.OnDataChangedListener {
                                 Column {
                                     Text("Second")
                                     Button(onClick = {
-                                        appState.startUserFlow("main", "A")
-                                        sendKey(appState = appState)
+                                        stateStore.startUserFlow("main", "A")
+                                        sendKey(stateStore = stateStore)
                                     }) {
                                         Text("Go to A")
                                     }
                                     Button(onClick = {
-                                        appState.startUserFlow("main", "C")
-                                        sendKey(appState = appState)
+                                        stateStore.startUserFlow("main", "C")
+                                        sendKey(stateStore = stateStore)
                                     }) {
                                         Text("Go to C")
                                     }
@@ -97,14 +97,14 @@ class PhoneActivity : ComponentActivity(), DataClient.OnDataChangedListener {
                                 Column {
                                     Text("Third")
                                     Button(onClick = {
-                                        appState.startUserFlow("main", "A")
-                                        sendKey(appState = appState)
+                                        stateStore.startUserFlow("main", "A")
+                                        sendKey(stateStore = stateStore)
                                     }) {
                                         Text("Go to A")
                                     }
                                     Button(onClick = {
-                                        appState.startUserFlow("main", "B")
-                                        sendKey(appState = appState)
+                                        stateStore.startUserFlow("main", "B")
+                                        sendKey(stateStore = stateStore)
                                     }) {
                                         Text("Go to B")
                                     }
@@ -122,10 +122,10 @@ class PhoneActivity : ComponentActivity(), DataClient.OnDataChangedListener {
         dataClient.addListener(this)
     }
 
-    private fun sendKey(appState: AppState) {
+    private fun sendKey(stateStore: StateStore) {
         lifecycleScope.launch {
         try {
-            val currentState = appState.userFlow("main").lastOrNull() as? String ?: "end"
+            val currentState = stateStore.userFlow("main").lastOrNull() as? String ?: "end"
             val request =
                 PutDataMapRequest
                     .create("/appstate")
@@ -149,7 +149,7 @@ class PhoneActivity : ComponentActivity(), DataClient.OnDataChangedListener {
         dataEvents.forEach { event ->
             // DataItem changed
             if (event.type == DataEvent.TYPE_CHANGED) {
-                val appState = (application as MyApplication).appState
+                val stateStore = (application as MyApplication).stateStore
                 val key = event.dataItem.data?.decodeToString()
                     ?.substringAfter("appstate")
                     ?.substringBefore("time")
@@ -160,7 +160,7 @@ class PhoneActivity : ComponentActivity(), DataClient.OnDataChangedListener {
                 }
 
                 if (key != null && key != "end") {
-                    appState.startUserFlow("main", key)
+                    stateStore.startUserFlow("main", key)
                 }
             } else if (event.type == DataEvent.TYPE_DELETED) {
                 // DataItem deleted

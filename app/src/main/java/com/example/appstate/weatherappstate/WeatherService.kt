@@ -41,7 +41,7 @@ class WeatherService : Service() {
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val appState = (application as MyApplication).appState
+        val stateStore = (application as MyApplication).stateStore
         val country = intent?.getStringExtra("country") ?: "US"
         val action = intent?.action
 
@@ -50,7 +50,7 @@ class WeatherService : Service() {
                 val cityName = intent.getStringExtra("city_name") ?: return@launch
                 
                 try {
-                    appState.setIsLoading(true)
+                    stateStore.setIsLoading(true)
                     val json = Json { ignoreUnknownKeys = true }
                     
                     // 1. Geocode the city name to get lat/lon
@@ -69,19 +69,19 @@ class WeatherService : Service() {
                         val newCity = City(result.name, temp, result.latitude, result.longitude)
                         
                         launch(Dispatchers.Main) {
-                            appState.addCity(newCity, country)
+                            stateStore.addCity(newCity, country)
                         }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 } finally {
-                    appState.setIsLoading(false)
+                    stateStore.setIsLoading(false)
                 }
             } else {
                 try {
-                    appState.setIsLoading(true)
+                    stateStore.setIsLoading(true)
                     
-                    var currentCities = appState.cityList(country).value
+                    var currentCities = stateStore.cityList(country).value
                     if (currentCities.isEmpty()) {
                         currentCities = listOf(
                             City("Boston", 0, 42.3601, -71.0589),
@@ -119,13 +119,13 @@ class WeatherService : Service() {
                         }
                         
                         launch(Dispatchers.Main) {
-                            appState.setState(CitiesAppStateKey(country), updatedCities)
+                            stateStore.setState(CitiesStateStoreKey(country), updatedCities)
                         }
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
                 } finally {
-                    appState.setIsLoading(false)
+                    stateStore.setIsLoading(false)
                 }
             }
         }
