@@ -28,7 +28,7 @@ import com.example.appstate.weatherappstate.WeatherActivity
 import com.example.appstate.weatherappstate.selectedCity
 import kotlinx.serialization.Serializable
 
-class WeatherWidget : AppStateGlanceWidget<WidgetData>() {
+object WeatherWidget : AppStateGlanceWidget<WidgetData>() {
 
     @Composable
     override fun provideData(

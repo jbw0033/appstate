@@ -6,9 +6,8 @@ import com.example.appstate.weatherappstate.widget.WeatherWidget
 
 class WeatherWidgetInitializer : Initializer<WeatherWidget> {
     override fun create(context: Context): WeatherWidget {
-        val widget = WeatherWidget()
-        widget.startTransform(context)
-        return widget
+        WeatherWidget.startTransform(context.applicationContext)
+        return WeatherWidget
     }
 
     override fun dependencies(): List<Class<out Initializer<*>>> {
